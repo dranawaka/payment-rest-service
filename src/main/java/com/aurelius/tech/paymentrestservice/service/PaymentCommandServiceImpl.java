@@ -47,7 +47,14 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
                 .build();
 
         // Key = paymentId to preserve ordering per payment
-        kafkaTemplate.send(paymentRequestedTopic, paymentId, msg);
+        kafkaTemplate.send(paymentRequestedTopic, paymentId, msg).whenComplete((result, ex) -> {
+            if (ex != null) {
+                ex.printStackTrace();
+            } else {
+                System.out.println("Message sent to partition " +
+                        result.getRecordMetadata().partition());
+            }
+        });
 
         return new PaymentAcceptedResponse(paymentId, PaymentStatus.PENDING.name(), correlationId);
     }

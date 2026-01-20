@@ -13,45 +13,60 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>payment-rest-service</name>
     <description>payment-rest-service</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
+
     <properties>
         <java.version>17</java.version>
+        <jackson.version>2.15.2</jackson.version>
     </properties>
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-kafka</artifactId>
         </dependency>
-
-
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <dependency>
+            <!-- Jackson does not handle java.time types by default — you need the jackson-datatype-jsr310 module. -->
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version> <!-- Needs to be same Jackson version-->
+        </dependency>
+        <!--
+            Force Jackson 2.x dependencies:
 
+            Reason:
+            Spring Boot 4 (4.0.1) brings in Jackson 3.x (tools.jackson.core:jackson-databind:3.x) by default.
+            However, Spring Kafka 4.x (used in this project) **still expects Jackson 2.x** for JSON serialization/deserialization.
 
+            If Jackson 3.x is on the classpath, Kafka's JsonSerializer cannot find the class
+            `com.fasterxml.jackson.core.type.TypeReference`, resulting in:
+                java.lang.ClassNotFoundException: com.fasterxml.jackson.core.type.TypeReference
 
+            To fix this, we explicitly add Jackson 2.15.2 dependencies (databind, core, annotations)
+            to ensure that Kafka serialization works correctly and avoids classpath conflicts.
+        -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
