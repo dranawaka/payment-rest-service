@@ -17,7 +17,7 @@ public class PaymentRequest {
     private String correlationId;
     private int retryCount;
 
-
+    public PaymentRequest() { }
 
     private PaymentRequest(Builder builder) {
         this.eventId = builder.eventId;

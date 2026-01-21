@@ -17,7 +17,7 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
 
     private final KafkaTemplate<String, PaymentRequest> kafkaTemplate;
 
-    @Value("${topics.payment-requested:payments-topic}")
+    @Value("${topics.payment-requested:payments.topic}")
     private String paymentRequestedTopic;
 
     public PaymentCommandServiceImpl(KafkaTemplate<String, PaymentRequest> kafkaTemplate) {
